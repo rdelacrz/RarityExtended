@@ -12,9 +12,11 @@ import	ModalLogin						from	'components/ModalLogin';
 import	FlyoutMenu						from	'components/FlyoutMenu';
 
 function	Navbar({router}) {
-	const	{active, address, deactivate, onDesactivate} = useWeb3();
+	const	{active, address, deactivate, onDeactivate} = useWeb3();
 	const	[initialPopup, set_initialPopup] = useState(false);
 	const	[modalLoginOpen, set_modalLoginOpen] = useState(false);
+
+	console.log('active', active)
 
 	useEffect(() => {
 		if (initialPopup)
@@ -32,7 +34,7 @@ function	Navbar({router}) {
 			return (
 				<button
 					onClick={() => set_modalLoginOpen(true)}
-					className={'inline-flex px-3 py-2 items-center leading-4 text-xs cursor-pointer whitespace-nowrap font-semibold '}>
+					className={'inline-flex px-3 py-2 items-center leading-4 text-xs cursor-pointer whitespace-nowrap font-semibold'}>
 					<span className={'hidden md:flex'}>{'Connect wallet'}</span>
 					<span className={'flex md:hidden'}>{'Connect'}</span>
 				</button>
@@ -40,7 +42,7 @@ function	Navbar({router}) {
 		}
 		return (
 			<p
-				onClick={() => {deactivate(); onDesactivate();}}
+				onClick={() => {deactivate(); onDeactivate();}}
 				suppressHydrationWarning
 				className={'inline-flex px-3 py-2 items-center leading-4 text-xs cursor-pointer whitespace-nowrap font-semibold  hover:underline'}>
 				<span className={'flex md:hidden'}>{`${address.slice(0, 4)}`}</span>

@@ -60,7 +60,7 @@ export const Web3ContextApp = ({children}) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [library]);
 
-	const onDesactivate = useCallback(() => {
+	const onDeactivate = useCallback(() => {
 		set_chainID(-1);
 		set_provider(undefined);
 		set_lastWallet(walletType.NONE);
@@ -68,7 +68,7 @@ export const Web3ContextApp = ({children}) => {
 		if (connector !== undefined) {
 			connector
 				.off(ConnectorEvent.Update, onUpdate)
-				.off(ConnectorEvent.Deactivate, onDesactivate);
+				.off(ConnectorEvent.Deactivate, onDeactivate);
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connector]);
@@ -81,9 +81,9 @@ export const Web3ContextApp = ({children}) => {
 
 		connector
 			.on(ConnectorEvent.Update, onUpdate)
-			.on(ConnectorEvent.Deactivate, onDesactivate);
+			.on(ConnectorEvent.Deactivate, onDeactivate);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [account, chainId, connector, library, onDesactivate, onUpdate]);
+	}, [account, chainId, connector, library, onDeactivate, onUpdate]);
 
 	const switchChain = useCallback(() => {
 		if (Number(chainID) === 250) {
@@ -119,9 +119,9 @@ export const Web3ContextApp = ({children}) => {
 	**	Moreover, we are starting to listen to events (disconnect, changeAccount
 	**	or changeChain).
 	**************************************************************************/
-	async function connect(_providerType, desactivate = true) {
+	async function connect(_providerType, deactivate = true) {
 		if (_providerType === walletType.METAMASK) {
-			if (active && !desactivate) {
+			if (active && !deactivate) {
 				deactivate();
 			}
 			await (window.ethereum.send)('eth_accounts');
@@ -183,7 +183,7 @@ export const Web3ContextApp = ({children}) => {
 				address,
 				connect,
 				deactivate,
-				onDesactivate,
+				onDeactivate,
 				walletType,
 				chainID,
 				isActivated,
