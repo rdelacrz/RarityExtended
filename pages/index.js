@@ -18,7 +18,7 @@ function	Index({router}) {
 
 	if (adventurers?.length === 0) {
 		return (
-			<SectionNoAdventurer />
+			<SectionNoAdventurer router={router} />
 		);
 	}
 
