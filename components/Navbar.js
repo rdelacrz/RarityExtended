@@ -16,8 +16,6 @@ function	Navbar({router}) {
 	const	[initialPopup, set_initialPopup] = useState(false);
 	const	[modalLoginOpen, set_modalLoginOpen] = useState(false);
 
-	console.log('active', active)
-
 	useEffect(() => {
 		if (initialPopup)
 			return;

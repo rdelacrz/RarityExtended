@@ -117,7 +117,7 @@ function	Attributes({adventurer, updateRarity, provider}) {
 			{updateAttribute.remainingPoints >= 0 ? (
 				<p onClick={buyPoints} className={`text-xss border-t-2 border-b-2 border-black dark:border-dark-100 flex justify-center items-center py-1 my-2 ${updateAttribute.remainingPoints === 0 ? 'animate-pulse text-center cursor-pointer hover:bg-black hover:animate-none hover:text-white' : ''}`}>
 					{updateAttribute.remainingPoints === 0 ?
-						'▶ Save you stats ! ◀'
+						'▶ Save your stats ! ◀'
 						:
 						`▶ You have ${updateAttribute.remainingPoints} points to spend ! ◀`
 					}
