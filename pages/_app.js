@@ -46,7 +46,7 @@ function	GameWrapper({Component, pageProps, element, router}) {
 
 	return (
 		<div className={'pb-24 mb-24 relative'}>
-			{chainID >= 0 && (chainID !== 250 && chainID !== 1337) ? (
+			{chainID >= 0 && chainID !== process.env.CHAIN_ID ? (
 				<div aria-label={'switchchain'} className={'flex w-full  text-lg text-center justify-center'} onClick={switchChain}>
 					{'PLEASE SWITCH TO FANTOM NETWORK'}
 				</div>
@@ -70,7 +70,7 @@ function	AppWrapper(props) {
 	const	windowInFocus = useWindowInFocus();
 
 	React.useEffect(() => {
-		if (windowInFocus && Number(chainID) > 0 && (Number(chainID) !== 250 && Number(chainID) !== 1337)) {
+		if (windowInFocus && Number(chainID) > 0 && Number(chainID) !== process.env.CHAIN_ID) {
 			switchChain();
 		}
 	}, [chainID, windowInFocus, switchChain]);

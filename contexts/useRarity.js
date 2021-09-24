@@ -31,7 +31,7 @@ async function newEthCallProvider(provider) {
 export const RarityContextApp = ({children}) => {
 	const	{active, address, chainID, provider} = useWeb3();
 	const	getRaritiesRequestURI = `
-		https://api.ftmscan.com/api
+		${process.env.NETWORK_API_URL}/api
 		?module=account
 		&action=tokennfttx
 		&contractaddress=${process.env.RARITY_ADDR}

@@ -86,7 +86,7 @@ export const Web3ContextApp = ({children}) => {
 	}, [account, chainId, connector, library, onDeactivate, onUpdate]);
 
 	const switchChain = useCallback(() => {
-		if (Number(chainID) === 250) {
+		if (Number(chainID) === process.env.CHAIN_ID) {
 			return;
 		}
 		if (!provider || !active) {
@@ -135,8 +135,12 @@ export const Web3ContextApp = ({children}) => {
 				deactivate();
 			}
 			const walletconnect = new WalletConnectConnector({
-				rpc: {1: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161', 250: 'https://rpc.ftm.tools'},
-				chainId: 250,
+				rpc: {
+					1: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+					137: 'https://polygonscan.com',
+					250: 'https://rpc.ftm.tools',
+				},
+				chainId: process.env.CHAIN_ID,
 				bridge: 'https://bridge.walletconnect.org',
 				pollingInterval: 12000,
 				qrcodeModal: QRCodeModal,
@@ -187,7 +191,7 @@ export const Web3ContextApp = ({children}) => {
 				walletType,
 				chainID,
 				isActivated,
-				active: active && (Number(chainID) === 250 || Number(chainID) === 1337),
+				active: active && Number(chainID) === process.env.CHAIN_ID,
 				initialized,
 				switchChain,
 				chainTime,

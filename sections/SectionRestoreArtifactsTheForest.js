@@ -47,7 +47,7 @@ function	SectionArtifactsTheForest({shouldDisplay, adventurers, adventurersCount
 	const	[, set_nonce]	= useState(0);
 	const	{address, provider, chainID} = useWeb3();
 	const	{updateRarity} = useRarity();
-	const	getV1Artifacts = `https://api.ftmscan.com/api
+	const	getV1Artifacts = `${process.env.NETWORK_API_URL}/api
 		?module=account
 		&action=tokennfttx
 		&contractaddress=${process.env.DUNGEON_THE_FOREST_V1_ADDR}
@@ -125,7 +125,7 @@ function	SectionArtifactsTheForest({shouldDisplay, adventurers, adventurersCount
 	**	Trigger a re-fetch of the artifacts
 	**************************************************************************/
 	async function	fetchArtifacts() {
-		const {result} = await fetcher(`https://api.ftmscan.com/api
+		const {result} = await fetcher(`${process.env.NETWORK_API_URL}/api
 			?module=account
 			&action=tokennfttx
 			&contractaddress=${process.env.DUNGEON_THE_FOREST_V1_ADDR}
