@@ -17,16 +17,16 @@ import	{exploreTheForest}					from	'utils/actions';
 const	classMappingImg = [
 	'',
 	'/front/barbarian.svg',
-	'/bard.png',
-	'/cleric.png',
-	'/druid.png',
-	'/fighter.png',
-	'/monk.png',
-	'/paladin.png',
-	'/ranger.png',
-	'/rogue.png',
-	'/sorcerer.png',
-	'/wizard.png',
+	'/front/bard.svg',
+	'/front/cleric.svg',
+	'/front/druid.svg',
+	'/front/fighter.svg',
+	'/front/monk.svg',
+	'/front/paladin.svg',
+	'/front/ranger.svg',
+	'/front/rogue.svg',
+	'/front/sorcerer.svg',
+	'/front/wizard.svg',
 ];
 
 function	FacuHeadline() {

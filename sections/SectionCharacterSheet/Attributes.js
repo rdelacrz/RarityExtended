@@ -8,7 +8,6 @@
 import	React, {useState}			from	'react';
 import	{setAttributes}				from	'utils/actions';
 
-
 function	Attribute({isInit, name, value, updateAttribute, set_updateAttribute, toUpdate}) {
 	function pointCost(val) {
 		if (val <= 14) {
