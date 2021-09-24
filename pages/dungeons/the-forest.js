@@ -13,21 +13,7 @@ import	useRarity							from	'contexts/useRarity';
 import	DialogBox							from	'components/DialogBox';
 import	Typer								from	'components/Typer';
 import	{exploreTheForest}					from	'utils/actions';
-
-const	classMappingImg = [
-	'',
-	'/front/barbarian.svg',
-	'/front/bard.svg',
-	'/front/cleric.svg',
-	'/front/druid.svg',
-	'/front/fighter.svg',
-	'/front/monk.svg',
-	'/front/paladin.svg',
-	'/front/ranger.svg',
-	'/front/rogue.svg',
-	'/front/sorcerer.svg',
-	'/front/wizard.svg',
-];
+import	{classMappingImg}					from	'utils/constants';
 
 function	NPCHeadline() {
 	const	[npcTextIndex, set_npcTextIndex] = useState(0);

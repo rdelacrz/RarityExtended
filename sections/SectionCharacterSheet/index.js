@@ -13,22 +13,8 @@ import	{xpRequired}		from	'utils/libs/rarity';
 import	Attributes			from	'sections/SectionCharacterSheet/Attributes';	
 import	Balloon				from	'sections/SectionCharacterSheet/Balloon';	
 import	Skills				from	'sections/SectionCharacterSheet/Skills';	
-import	Inventory			from	'sections/SectionCharacterSheet/Inventory';	
-
-const	classMappingImg = [
-	'',
-	'/front/barbarian.svg',
-	'/front/bard.svg',
-	'/front/cleric.svg',
-	'/front/druid.svg',
-	'/front/fighter.svg',
-	'/front/monk.svg',
-	'/front/paladin.svg',
-	'/front/ranger.svg',
-	'/front/rogue.svg',
-	'/front/sorcerer.svg',
-	'/front/wizard.svg',
-];
+import	Inventory			from	'sections/SectionCharacterSheet/Inventory';
+import	{classMappingImg}	from	'utils/constants';
 
 function	AdventurerTab({adventurer, updateRarity, provider}) {
 	const	[selectedTab, set_selectedTab] = useState(0);
