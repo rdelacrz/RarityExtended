@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NETWORK=polygon next dev",
+    "dev:ftm": "cross-env NETWORK=ftm next dev",
     "open-browser": "open http://localhost:3000",
     "build": "next build",
     "analyze": "ANALYZE=true next build",
@@ -40,6 +41,7 @@
     "use-wallet": "^0.10.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-next": "^11.1.2",
     "eslint-plugin-react": "^7.25.1",

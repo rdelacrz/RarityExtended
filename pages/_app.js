@@ -29,7 +29,7 @@ function	GameWrapper({Component, pageProps, element, router}) {
 
 	if (!isLoaded) {
 		return (
-			<div className={'absolute inset-0 backdrop-blur-3xl bg-opacity-40 cursor-not-allowed'}>
+			<div className={'absolute inset-0 backdrop-blur-3xl bg-opacity-40 pointer-events-none'}>
 				<div className={'loader'} />
 				<div className={'absolute inset-0 mt-32 flex justify-center items-center'}>
 					<p className={'center-text text-white z-40'}>{'Retrieving your adventurers...'}</p>
@@ -48,7 +48,7 @@ function	GameWrapper({Component, pageProps, element, router}) {
 		<div className={'pb-24 mb-24 relative'}>
 			{chainID >= 0 && chainID !== process.env.CHAIN_ID ? (
 				<div aria-label={'switchchain'} className={'flex w-full  text-lg text-center justify-center'} onClick={switchChain}>
-					{'PLEASE SWITCH TO FANTOM NETWORK'}
+					{'PLEASE SWITCH TO POLYGON NETWORK'}
 				</div>
 			) : null}
 			<Component
