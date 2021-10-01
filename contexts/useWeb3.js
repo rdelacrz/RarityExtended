@@ -95,17 +95,9 @@ export const Web3ContextApp = ({children}) => {
 			console.error('Not initialized');
 			return;
 		}
-		provider.send('wallet_addEthereumChain', [{
-			'chainId': '0xFA',
-			'blockExplorerUrls': ['https://ftmscan.com'],
-			'chainName': 'Fantom Opera',
-			'rpcUrls': ['https://rpc.ftm.tools'],
-			'nativeCurrency': {
-				'name': 'Fantom',
-				'symbol': 'FTM',
-				'decimals': 18
-			}
-		}, address]).catch((error) => console.error(error));
+
+		const addEthChainParam = JSON.parse(process.env.ADD_ETH_CHAIN_PARAM);
+		provider.send('wallet_addEthereumChain', [addEthChainParam, address]).catch((error) => console.error(error));
 	}, [active, address, chainID, provider]);
 
 	/**************************************************************************

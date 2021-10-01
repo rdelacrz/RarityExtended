@@ -9,20 +9,46 @@ const Dotenv = require('dotenv-webpack');
 
 const networkVars = {
 	ftm: {
+		NETWORK_NAME: 'Fantom',
+		NETWORK_KEY: process.env.FMT_KEY,
 		CHAIN_ID: 250,
-		NETWORK_API_URL: 'https://api.ftmscan.com',
+		NETWORK_API_URL: 'https://api.ftmscan.com/api',
 		RARITY_ADDR: '0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb',
 		RARITY_ATTR_ADDR: '0xb5f5af1087a8da62a23b08c00c6ec9af21f397a1',
 		RARITY_GOLD_ADDR: '0x2069B76Afe6b734Fb65D1d099E7ec64ee9CC76B2',
 		RARITY_SKILLS_ADDR: '0x51C0B29A1d84611373BA301706c6B4b72283C80F',
+		ADD_ETH_CHAIN_PARAM: JSON.stringify({
+			'chainId': '0xFA',
+			'blockExplorerUrls': ['https://ftmscan.com'],
+			'chainName': 'Fantom Opera',
+			'rpcUrls': ['https://rpc.ftm.tools'],
+			'nativeCurrency': {
+				'name': 'Fantom',
+				'symbol': 'FTM',
+				'decimals': 18
+			}
+		}),
 	},
 	polygon: {
+		NETWORK_NAME: 'Polygon',
+		NETWORK_KEY: 'DTV5YPK2WGU2HNC9P3XEKFF6ZYQZPVPRAP', //process.env.POLYGON_KEY,
 		CHAIN_ID: 137,
-		NETWORK_API_URL: 'https://api.polygonscan.com',
+		NETWORK_API_URL: 'https://api.polygonscan.com/api',
 		RARITY_ADDR: '0x4fb729BDb96d735692DCACD9640cF7e3aA859B25',
 		RARITY_ATTR_ADDR: '0x3a7c6a0e65480eb32a0ddf1cc2db6563aaed03ce',
 		RARITY_GOLD_ADDR: '0x7303E7a860DAFfE4d0b33615479648cb3496903b',
 		RARITY_SKILLS_ADDR: '0xf740103f4eDB85609292472048Dc823b5417D9a6',
+		ADD_ETH_CHAIN_PARAM: JSON.stringify({
+			'chainId': '0x89',
+			'blockExplorerUrls': ['https://polygonscan.com/'],
+			'chainName': 'Polygon',
+			'rpcUrls': ['https://rpc-mainnet.matic.network'],
+			'nativeCurrency': {
+				'name': 'Polygon',
+				'symbol': 'MATIC',
+				'decimals': 18
+			}
+		}),
 	},
 }
 
@@ -33,7 +59,7 @@ module.exports = ({
 	env: {
 		...networkVars[process.env.NETWORK],
 
-		FMT_KEY: process.env.FMT_KEY,
+		NETWORK: process.env.NETWORK,
 		WEBSITE_URI: process.env.WEBSITE_URI || 'https://adventure.major.tax/',
 		
 		RARITY_CRAFTING_ADDR: '0xf41270836dF4Db1D28F7fd0935270e3A603e78cC',

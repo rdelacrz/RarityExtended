@@ -103,7 +103,7 @@ function	Info({adventurer, updateRarity, provider}) {
 	);
 }
 
-function	Aventurer({rarity, provider, updateRarity, router, chainTime}) {
+function	Adventurer({rarity, provider, updateRarity, router, chainTime}) {
 	return (
 		<div className={'w-full'}>
 			<div className={'flex flex-row w-full mb-6'}>
@@ -137,4 +137,4 @@ function	Aventurer({rarity, provider, updateRarity, router, chainTime}) {
 	);
 }
 
-export default Aventurer;
+export default Adventurer;

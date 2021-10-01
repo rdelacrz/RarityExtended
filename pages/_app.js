@@ -48,7 +48,7 @@ function	GameWrapper({Component, pageProps, element, router}) {
 		<div className={'pb-24 mb-24 relative'}>
 			{chainID >= 0 && chainID !== process.env.CHAIN_ID ? (
 				<div aria-label={'switchchain'} className={'flex w-full  text-lg text-center justify-center'} onClick={switchChain}>
-					{'PLEASE SWITCH TO POLYGON NETWORK'}
+					{`PLEASE SWITCH TO ${process.env.NETWORK_NAME.toUpperCase()} NETWORK`}
 				</div>
 			) : null}
 			<Component

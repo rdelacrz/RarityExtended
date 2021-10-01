@@ -43,12 +43,12 @@ async function newEthCallProvider(provider, devMode) {
 export const RarityContextApp = ({children}) => {
 	const	{active, address, chainID, provider} = useWeb3();
 	const	getRaritiesRequestURI = `
-		${process.env.NETWORK_API_URL}/api
+		${process.env.NETWORK_API_URL}
 		?module=account
 		&action=tokennfttx
 		&contractaddress=${process.env.RARITY_ADDR}
 		&address=${address}
-		&apikey=${process.env.FMT_KEY}`;
+		&apikey=${process.env.NETWORK_KEY}`;
 	const	{data} = useSWR(active && address ? getRaritiesRequestURI : null, fetcher);
 
 	const	[currentAdventurer, set_currentAdventurer] = useState(null);
@@ -310,12 +310,12 @@ export const RarityContextApp = ({children}) => {
 	**	Trigger a re-fetch of the rarities from an in-app update
 	**************************************************************************/
 	async function	fetchRarity() {
-		const {result} = await fetcher(`https://api.ftmscan.com/api
+		const {result} = await fetcher(`${process.env.NETWORK_API_URL}
 			?module=account
 			&action=tokennfttx
 			&contractaddress=${process.env.RARITY_ADDR}
 			&address=${address}
-			&apikey=${process.env.FMT_KEY}`);
+			&apikey=${process.env.NETWORK_KEY}`);
 		await updateRarities(result);
 	}
 

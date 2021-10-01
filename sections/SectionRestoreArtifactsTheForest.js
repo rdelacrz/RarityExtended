@@ -47,12 +47,12 @@ function	SectionArtifactsTheForest({shouldDisplay, adventurers, adventurersCount
 	const	[, set_nonce]	= useState(0);
 	const	{address, provider, chainID} = useWeb3();
 	const	{updateRarity} = useRarity();
-	const	getV1Artifacts = `${process.env.NETWORK_API_URL}/api
+	const	getV1Artifacts = `${process.env.NETWORK_API_URL}
 		?module=account
 		&action=tokennfttx
 		&contractaddress=${process.env.DUNGEON_THE_FOREST_V1_ADDR}
 		&address=${address}
-		&apikey=${process.env.FMT_KEY}`;
+		&apikey=${process.env.NETWORK_KEY}`;
 	const	{data} = useSWR(getV1Artifacts, fetcher, {revalidateOnFocus: false, revalidateOnReconnect: false});
 
 	/**************************************************************************
@@ -125,12 +125,12 @@ function	SectionArtifactsTheForest({shouldDisplay, adventurers, adventurersCount
 	**	Trigger a re-fetch of the artifacts
 	**************************************************************************/
 	async function	fetchArtifacts() {
-		const {result} = await fetcher(`${process.env.NETWORK_API_URL}/api
+		const {result} = await fetcher(`${process.env.NETWORK_API_URL}
 			?module=account
 			&action=tokennfttx
 			&contractaddress=${process.env.DUNGEON_THE_FOREST_V1_ADDR}
 			&address=${address}
-			&apikey=${process.env.FMT_KEY}`);
+			&apikey=${process.env.NETWORK_KEY}`);
 		prepareArtifacts(result || []);
 	}
 	/**************************************************************************
