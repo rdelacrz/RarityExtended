@@ -26,6 +26,8 @@ import	MANIFEST_GOODS											from	'utils/codex/items_manifest_goods.json';
 import	MANIFEST_ARMORS											from	'utils/codex/items_manifest_armors.json';
 import	MANIFEST_WEAPONS										from	'utils/codex/items_manifest_weapons.json';
 
+import { dungeonTypes, isDungeonAvailable, numberOfDungeonsAvailable } from 'utils/scarcity-functions';
+
 const	RarityContext = createContext();
 let		isUpdatingRarities = false;
 
@@ -126,9 +128,9 @@ export const RarityContextApp = ({children}) => {
 			rarityAttr.ability_scores(tokenID),
 			rarityGold.balanceOf(tokenID),
 			raritySkills.get_skills(tokenID),
-			rarityDungeonCellar.adventurers_log(tokenID),
-			rarityDungeonForest.getResearchBySummoner(tokenID)
-		];
+			isDungeonAvailable(dungeonTypes.CELLAR) && rarityDungeonCellar.adventurers_log(tokenID),
+			isDungeonAvailable(dungeonTypes.FOREST) && rarityDungeonForest.getResearchBySummoner(tokenID),
+		].filter(x => Boolean(x));
 	}
 	/**************************************************************************
 	**	Fetch the data from the prepared multicall to get most of the data
@@ -184,8 +186,24 @@ export const RarityContextApp = ({children}) => {
 	**	Actually update the state based on the data fetched
 	**************************************************************************/
 	function		setRarity(tokenID, multicallResult, callResult, inventoryCallResult) {
-		const	[owner, adventurer, initialAttributes, abilityScores, balanceOfGold, skills, cellarLog, forestResearch] = multicallResult;
+		const	[owner, adventurer, initialAttributes, abilityScores, balanceOfGold, skills] = multicallResult.slice(0, 6);
 		const	[claimableGold] = callResult;
+
+		// Sets up dungeons based on available ones (the order that dungeons are checked here is important!)
+		const dungeonResults = multicallResult.slice(6);
+		const dungeons = {};
+		if (isDungeonAvailable(dungeonTypes.CELLAR)) {
+			const cellarLog = dungeonResults.shift();
+			dungeons.cellar = Number(cellarLog);
+		}
+		if (isDungeonAvailable(dungeonTypes.FOREST)) {
+			const forestResearch = dungeonResults.shift();
+			dungeons.forest = {
+				initBlockTs: forestResearch.initBlockTs,
+				endBlockTs: forestResearch.endBlockTs,
+				canAdventure: forestResearch?.discovered === true || Number(forestResearch?.timeInDays) === 0
+			}
+		}
 
 		if (toAddress(owner) !== toAddress(address)) {
 			return;
@@ -213,14 +231,7 @@ export const RarityContextApp = ({children}) => {
 					charisma: initialAttributes ? abilityScores['charisma'] : 8,
 				},
 				skills: skills,
-				dungeons: {
-					cellar: Number(cellarLog),
-					forest: {
-						initBlockTs: forestResearch.initBlockTs,
-						endBlockTs: forestResearch.endBlockTs,
-						canAdventure: forestResearch?.discovered === true || Number(forestResearch?.timeInDays) === 0
-					}
-				},
+				dungeons,
 				inventory: inventoryCallResult
 			} : p);
 		}
@@ -246,14 +257,7 @@ export const RarityContextApp = ({children}) => {
 				charisma: initialAttributes ? abilityScores['charisma'] : 8,
 			},
 			skills: skills,
-			dungeons: {
-				cellar: Number(cellarLog),
-				forest: {
-					initBlockTs: forestResearch.initBlockTs,
-					endBlockTs: forestResearch.endBlockTs,
-					canAdventure: forestResearch?.discovered === true || Number(forestResearch?.timeInDays) === 0
-				}
-			},
+			dungeons,
 			inventory: inventoryCallResult
 		}}));
 		set_rNonce(prev => prev + 1);
@@ -271,15 +275,21 @@ export const RarityContextApp = ({children}) => {
 		const	preparedExtraCalls = [];
 		const	preparedInventoryCalls = [];
 		const	tokensIDs = [];
-		elements?.forEach((token) => {
-			preparedCalls.push(...prepareAdventurer(token.tokenID));
-			preparedExtraCalls.push(...prepareAdventurerExtra(token.tokenID));
-			preparedInventoryCalls.push(...prepareAdventurerInventory(token.tokenID));
-			tokensIDs.push(token.tokenID);
-		});
+
+		// In case elements from query is not an array, try-catch prevents the application from breaking
+		try {
+			elements.forEach((token) => {
+				preparedCalls.push(...prepareAdventurer(token.tokenID));
+				preparedExtraCalls.push(...prepareAdventurerExtra(token.tokenID));
+				preparedInventoryCalls.push(...prepareAdventurerInventory(token.tokenID));
+				tokensIDs.push(token.tokenID);
+			});
+		} catch(e) {
+			console.error(elements);		// Error message expected
+		}
 
 		const	callResults = await fetchAdventurer(preparedCalls);
-		const	chunkedCallResult = chunk(callResults, 8);
+		const	chunkedCallResult = chunk(callResults, 6 + numberOfDungeonsAvailable);
 		const	extraCallResults = await fetchAdventurerExtra(preparedExtraCalls);
 		const	chunkedExtraCallResult = chunk(extraCallResults, 1);
 		const	inventoryCallResult = await fetchAdventurerInventory(preparedInventoryCalls);
@@ -288,6 +298,7 @@ export const RarityContextApp = ({children}) => {
 			setRarity(tokenID, chunkedCallResult[i], chunkedExtraCallResult[i], chunkedinventoryCallResult[i]);
 		});
 		sharedCalls().then(result => prepareSharedInventory(result[0]));
+
 
 		set_loaded(true);
 		isUpdatingRarities = false;
@@ -298,7 +309,7 @@ export const RarityContextApp = ({children}) => {
 	**************************************************************************/
 	async function	updateRarity(tokenID) {
 		const	callResults = await fetchAdventurer(prepareAdventurer(tokenID));
-		const	chunkedCallResult = chunk(callResults, 8);
+		const	chunkedCallResult = chunk(callResults, 6 + numberOfDungeonsAvailable);
 		const	extraCallResults = await fetchAdventurerExtra(prepareAdventurerExtra(tokenID));
 		const	chunkedExtraCallResult = chunk(extraCallResults, 1);
 		const	inventoryCallResult = await fetchAdventurerInventory(prepareAdventurerInventory(tokenID));

@@ -10,8 +10,10 @@ import	{Contract}				from	'ethcall';
 import	RARITY_GOLD_ABI			from	'utils/abi/rarityGold.abi';
 import	THE_FOREST_ABI			from	'utils/abi/dungeonTheForest.abi';
 
+import { dungeonTypes, isDungeonAvailable }	from 	'utils/scarcity-functions';
+
 const	items = [
-	{
+	isDungeonAvailable(dungeonTypes.CELLAR) && {
 		name: 'Rat Skin',
 		description: 'This skin looks like the best possible material for an armor. No?',
 		img: '/items/rat_skin.png',
@@ -23,7 +25,7 @@ const	items = [
 		dungeon: 'The Cellar',
 		id: 0,
 	},
-	{
+	isDungeonAvailable(dungeonTypes.FOREST) && {
 		name: 'TheForest_treasure',
 		address: process.env.DUNGEON_THE_FOREST_ADDR,
 		fetch: (adventurerID) => new Contract(process.env.DUNGEON_THE_FOREST_ADDR, THE_FOREST_ABI).getTreasuresBySummoner(adventurerID),
@@ -31,13 +33,13 @@ const	items = [
 		parse: (item) => item,
 		id: 1,
 	},
-	{
+	isDungeonAvailable(dungeonTypes.FOREST) && {
 		name: 'Craft_weapons',
 		address: process.env.RARITY_CRAFTING_ADDR,
 		fetch: (adventurerID) => new Contract(process.env.DUNGEON_THE_FOREST_ADDR, THE_FOREST_ABI).getTreasuresBySummoner(adventurerID),
 		parse: (item) => item,
 		id: 2,
 	}
-];
+].filter(item => Boolean(item));
 
 export default items;

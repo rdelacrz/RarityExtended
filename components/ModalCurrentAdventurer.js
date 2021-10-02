@@ -37,7 +37,7 @@ const	classOptions = [
 
 function ModalCurrentAdventurer({isOpen, closeModal}) {
 	const	{rarities, set_currentAdventurer} = useRarity();
-	const	{address, deactivate, onDesactivate} = useWeb3();
+	const	{address, deactivate, onDeactivate} = useWeb3();
 	const	[search, set_search] = useState('');
 	const	[classTab, set_classTab] = useState(0);
 	const	[level, set_level] = useState(levelOptions[0]);
@@ -83,7 +83,7 @@ function ModalCurrentAdventurer({isOpen, closeModal}) {
 									className={'border-4 border-black dark:border-dark-100 bg-white dark:bg-dark-600 border-solid h-10 w-full md:w-75 mr-0 md:mr-4 text-xs px-2 focus:outline-none text-black dark:text-white'}
 									placeholder={'SEARCH'} />
 								<button
-									onClick={() => {deactivate(); onDesactivate();}}
+									onClick={() => {deactivate(); onDeactivate();}}
 									className={'ml-auto border-4 border-black dark:border-dark-100 border-solid my-4 md:my-0 w-full md:w-auto h-10 px-12 text-xs text-black dark:text-white hover:bg-gray-secondary dark:hover:bg-dark-900 cursor-pointer relative'}>
 									{`${address.slice(0, 4)}...${address.slice(-4)}`}
 									<div className={'absolute right-2 cursor-pointer h-10 -top-1 flex justify-center items-center'}>
