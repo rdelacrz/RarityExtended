@@ -70,7 +70,8 @@ function	SectionArtifactsTheForest({shouldDisplay, adventurers, adventurersCount
 	async function	fetchV1Artifacts(calls) {
 		if (Number(chainID) === 1337) {
 			const	ethcallProvider = await newEthCallProvider(new ethers.providers.JsonRpcProvider('http://localhost:8545'));
-			ethcallProvider.multicallAddress = '0xc04d660976c923ddba750341fe5923e47900cf24';
+			ethcallProvider.multicallAddress = process.env.MULTICALL_ADDRESS;
+			ethcallProvider.multicall2Address = process.env.MULTICALL2_ADDRESS;
 			const	callResult = await ethcallProvider.all(calls);
 			return (callResult);
 		} else {

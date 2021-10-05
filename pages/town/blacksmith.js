@@ -22,13 +22,15 @@ import	RARITY_ABI							from	'utils/abi/rarity.abi';
 import	RARITY_GOLD_ABI						from	'utils/abi/rarityGold.abi';
 import	THE_CELLAR_ABI						from	'utils/abi/dungeonTheCellar.abi';
 import	{approveERC20}						from	'utils/actions';
+import	{dungeonTypes, isDungeonAvailable}	from	'utils/scarcity-functions';
 
 
 async function newEthCallProvider(provider, devMode) {
 	const	ethcallProvider = new Provider();
 	if (devMode) {
 		await	ethcallProvider.init(new ethers.providers.JsonRpcProvider('http://localhost:8545'));
-		ethcallProvider.multicallAddress = '0xc04d660976c923ddba750341fe5923e47900cf24';
+		ethcallProvider.multicallAddress = process.env.MULTICALL_ADDRESS;
+		ethcallProvider.multicall2Address = process.env.MULTICALL2_ADDRESS;
 		return ethcallProvider;
 	}
 	await	ethcallProvider.init(provider);
@@ -140,9 +142,9 @@ function	DialogChoices({router, adventurersCount, set_category, approveStatus, a
 			options={[
 				{label: 'WELCOME', onClick: () => router.push('/town/blacksmith')},
 				{label: 'Access the Workshop', onClick: () => router.push('/town/blacksmith?tab=workshop')},
-				{label: 'Upgrade an Artifact', onClick: () => router.push('/town/blacksmith?tab=upgrade')},
-				{label: 'Restore an Artifact', onClick: () => router.push('/town/blacksmith?tab=restore')},
-			]} />
+				isDungeonAvailable(dungeonTypes.FOREST) && {label: 'Upgrade an Artifact', onClick: () => router.push('/town/blacksmith?tab=upgrade')},
+				isDungeonAvailable(dungeonTypes.FOREST) && {label: 'Restore an Artifact', onClick: () => router.push('/town/blacksmith?tab=restore')},
+			].filter(o => Boolean(o))} />
 	);
 }
 
@@ -463,6 +465,10 @@ function	NCPHeadline({router, approveStatus, adventurerCanCraft, adventurerHasXp
 				</>
 			);
 		}
+
+		const forestMessage = !isDungeonAvailable(dungeonTypes.FOREST) ? '' :
+			'  ALSO, IF YOU FOUND SOME ITEMS IN THE FOREST,  I CAN STILL UPGRADE THEM FOR XP. OR RESTORE THE ONES FROM THE OLD FOREST.';
+
 		if (hadInitialMessage) {
 			return (
 				<>
@@ -470,7 +476,7 @@ function	NCPHeadline({router, approveStatus, adventurerCanCraft, adventurerHasXp
 					<span className={'text-tag-info'}>{'CEAZOR THE BLACKSMITH'}</span>
 					{'. MY WORKSHOP IS OPEN FOR BUSINESS. YOU CAN NOW '}
 					<span className={'text-tag-info'}>{'CRAFT AN ITEM'}</span>
-					{' IF YOU HAVE THE SKILL AND MATERIALS TO PULL IT OFF. DON\'T WORRY I WILL HELP YOU OUT.  ALSO, IF YOU FOUND SOME ITEMS IN THE FOREST,  I CAN STILL UPGRADE THEM FOR XP. OR RESTORE THE ONES FROM THE OLD FOREST.'}
+					{` IF YOU HAVE THE SKILL AND MATERIALS TO PULL IT OFF. DON\'T WORRY I WILL HELP YOU OUT.${forestMessage}`}
 				</>		
 			);
 		}
@@ -606,16 +612,21 @@ function	Index({rarities, router}) {
 					set_category={set_category}
 					approveStatus={approveStatus}
 					shouldDisplay={router?.query?.tab === 'workshop' && approveStatus.approvedGold && approveStatus.approvedCraftingMaterials} />
-				<SectionArtifactsTheForest
-					shouldDisplay={router?.query?.tab === 'upgrade'}
-					router={router}
-					adventurers={rarities}
-					adventurersCount={adventurers.length} />
-				<SectionRestoreArtifactsTheForest
-					shouldDisplay={router?.query?.tab === 'restore'}
-					router={router}
-					adventurers={Object.values(rarities)}
-					adventurersCount={adventurers.length} />
+				{isDungeonAvailable(dungeonTypes.FOREST) && (
+					<>
+						<SectionArtifactsTheForest
+							shouldDisplay={router?.query?.tab === 'upgrade'}
+							router={router}
+							adventurers={rarities}
+							adventurersCount={adventurers.length} />
+						<SectionRestoreArtifactsTheForest
+							shouldDisplay={router?.query?.tab === 'restore'}
+							router={router}
+							adventurers={Object.values(rarities)}
+							adventurersCount={adventurers.length} />
+					</>
+				)}
+				
 			</div>
 			{isModalSkillsOpen && <ModalSkills
 				adventurer={currentAdventurer}

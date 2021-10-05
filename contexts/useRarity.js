@@ -18,6 +18,7 @@ import	RARITY_ABI												from	'utils/abi/rarity.abi';
 import	RARITY_ATTR_ABI											from	'utils/abi/rarityAttr.abi';
 import	RARITY_GOLD_ABI											from	'utils/abi/rarityGold.abi';
 import	RARITY_SKILLS_ABI										from	'utils/abi/raritySkills.abi';
+import	RARITY_LIBRARY_ABI										from	'utils/abi/rarityLibrary.abi';
 import	RARITY_CRAFTING_HELPER_ABI								from	'utils/abi/rarityCraftingHelper.abi';
 import	THE_CELLAR_ABI											from	'utils/abi/dungeonTheCellar.abi';
 import	THE_FOREST_ABI											from	'utils/abi/dungeonTheForest.abi';
@@ -35,7 +36,8 @@ async function newEthCallProvider(provider, devMode) {
 	const	ethcallProvider = new Provider();
 	if (devMode) {
 		await	ethcallProvider.init(new ethers.providers.JsonRpcProvider('http://localhost:8545'));
-		ethcallProvider.multicallAddress = '0xc04d660976c923ddba750341fe5923e47900cf24';
+		ethcallProvider.multicallAddress = process.env.MULTICALL_ADDRESS;
+		ethcallProvider.multicall2Address = process.env.MULTICALL2_ADDRESS;
 		return ethcallProvider;
 	}
 	await	ethcallProvider.init(provider);
@@ -75,11 +77,21 @@ export const RarityContextApp = ({children}) => {
 	}, [active, address, chainID, provider]);
 
 	async function	sharedCalls() {
-		const	rarityCraftingHelper = new Contract(process.env.RARITY_CRAFTING_HELPER_ADDR, RARITY_CRAFTING_HELPER_ABI);
-		const	ethcallProvider = await newEthCallProvider(provider, Number(chainID) === 1337);
-		const	callResult = await ethcallProvider.all([
-			rarityCraftingHelper.getItemsByAddress(address)
-		]);
+		const ethcallProvider = await newEthCallProvider(provider, Number(chainID) === 1337);
+		let	callResult;
+
+		if (process.env.RARITY_CRAFTING_HELPER_ADDR) {
+			const	rarityCraftingHelper = new Contract(process.env.RARITY_CRAFTING_HELPER_ADDR, RARITY_CRAFTING_HELPER_ABI);
+			callResult = await ethcallProvider.all([
+				rarityCraftingHelper.getItemsByAddress(address)
+			]);
+		} else {
+			const	rarityLibrary = new Contract(process.env.RARITY_LIBRARY_ADDR, RARITY_LIBRARY_ABI);
+			callResult = await ethcallProvider.all([
+				rarityLibrary.items1(address)
+			]);
+		}
+		
 		return (callResult);
 	}
 
@@ -154,7 +166,7 @@ export const RarityContextApp = ({children}) => {
 	async function	fetchAdventurerInventory(calls) {
 		if (Number(chainID) === 1337) {
 			const	ethcallProvider = await newEthCallProvider(new ethers.providers.JsonRpcProvider('http://localhost:8545'));
-			ethcallProvider.multicallAddress = '0xc04d660976c923ddba750341fe5923e47900cf24';
+			ethcallProvider.multicallAddress = process.env.MULTICALL_ADDRESS;
 			const	callResult = await ethcallProvider.all(calls);
 			return (callResult);
 		} else {
