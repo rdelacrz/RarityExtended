@@ -276,9 +276,19 @@ export const RarityContextApp = ({children}) => {
 		const	preparedInventoryCalls = [];
 		const	tokensIDs = [];
 
+		let		uniqueElements = [];
+		for (let i = 0; i < elements.length; i++) {
+			const	element = elements[i];
+			if (toAddress(element.to) !== toAddress(address)) {
+				uniqueElements = uniqueElements.filter(e => e.tokenID !== element.tokenID);
+			} else {
+				uniqueElements.push(element);
+			}
+		}
+
 		// In case elements from query is not an array, try-catch prevents the application from breaking
 		try {
-			elements.forEach((token) => {
+			uniqueElements?.forEach((token) => {
 				preparedCalls.push(...prepareAdventurer(token.tokenID));
 				preparedExtraCalls.push(...prepareAdventurerExtra(token.tokenID));
 				preparedInventoryCalls.push(...prepareAdventurerInventory(token.tokenID));
