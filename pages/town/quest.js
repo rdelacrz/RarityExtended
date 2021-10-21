@@ -17,6 +17,8 @@ import	SectionDungeonTheForest			from	'sections/SectionDungeonTheForest';
 import	Box								from	'components/Box';
 import	CLASSES							from	'utils/codex/classes';
 
+import { dungeonTypes, isDungeonAvailable } from 'utils/scarcity-functions';
+
 function	DialogChoices({router, adventurersCount}) {
 	const	[selectedOption, set_selectedOption] = useState(0);
 	const	[dialogNonce, set_dialogNonce] = useState(0);
@@ -103,7 +105,7 @@ function	DialogChoices({router, adventurersCount}) {
 			selectedOption={selectedOption}
 			nonce={dialogNonce}
 			options={[
-				{
+				isDungeonAvailable(dungeonTypes.CELLAR) && {
 					label: (
 						<>
 							{'THE RAT IN '}
@@ -112,7 +114,7 @@ function	DialogChoices({router, adventurersCount}) {
 					),
 					onClick: () => router.push('/town/quest?tab=the-cellar')
 				},
-				{
+				isDungeonAvailable(dungeonTypes.FOREST) && {
 					label: (
 						<>
 							{'THE TREASURE IN '}
@@ -121,7 +123,7 @@ function	DialogChoices({router, adventurersCount}) {
 					),
 					onClick: () => router.push('/town/quest?tab=the-forest')
 				},
-			]} />
+			].filter(o => Boolean(o))} />
 	);
 }
 

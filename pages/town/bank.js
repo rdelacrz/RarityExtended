@@ -16,6 +16,9 @@ import	Box								from	'components/Box';
 import	{fetcher}						from	'utils';
 import	{apeInVault, apeOutVault, depositInVault, withdrawFromVault}					from	'utils/actions';
 
+
+const bankImplemented = process.env.NETWORK === 'ftm';	// Remove this flag once implemented in Polygon!
+
 function	NPCHeadline({selectedVault, isTxPending, hasDeposited, hasDepositError, isDeposit}) {
 	const	[nonce, set_nonce] = useState(0);
 	const	[npcTextIndex, set_npcTextIndex] = useState(0);
@@ -27,6 +30,21 @@ function	NPCHeadline({selectedVault, isTxPending, hasDeposited, hasDepositError,
 	}, [selectedVault?.id, isTxPending, hasDeposited, hasDepositError, isDeposit]);
 
 	const	renderNPCText = () => {
+		if (!bankImplemented) {
+			return (
+				<>
+					<Typer onDone={() => set_npcTextIndex(i => i + 1)} shouldStart={npcTextIndex === 0}>
+						{'THE'}
+					</Typer>&nbsp;
+					<span className={'text-tag-info'}><Typer onDone={() => set_npcTextIndex(i => i + 1)} shouldStart={npcTextIndex === 1}>
+						{'BANK'}
+					</Typer></span>
+					<Typer onDone={() => set_npcTextIndex(i => i + 1)} shouldStart={npcTextIndex === 2}>
+						{' IS NOT YET OPEN, BUT YOU CAN COME AND HAVE A DRINK IN MY TAVERN IN THE MEAN TIME!'}
+					</Typer>
+				</>
+			);
+		}
 		if (selectedVault?.id >= 0) {
 			if (isTxPending) {
 				return (
@@ -36,7 +54,9 @@ function	NPCHeadline({selectedVault, isTxPending, hasDeposited, hasDepositError,
 			if (hasDeposited) {
 				return (
 					<>
-						<Typer onDone={() => set_npcTextIndex(i => i + 1)} shouldStart={npcTextIndex === 0}>{'THANK YOU FOR YOUR DEPOSIT! THIS IS A GREAT INVESTMENT! TRUST ME!'}</Typer>
+						<Typer onDone={() => set_npcTextIndex(i => i + 1)} shouldStart={npcTextIndex === 0}>
+							{'THANK YOU FOR YOUR DEPOSIT! THIS IS A GREAT INVESTMENT! TRUST ME!'}
+						</Typer>
 					</>
 				);
 			}
@@ -144,7 +164,7 @@ function	NPCHeadline({selectedVault, isTxPending, hasDeposited, hasDepositError,
 	);
 }
 
-function	Index() {
+function	Index({router}) {
 	const	{provider, address} = useWeb3();
 	const	[selectedVault, set_selectedVault] = useState({id: -1});
 	const	[ftmBalance, set_ftmBalance] = useState(0);
@@ -162,8 +182,9 @@ function	Index() {
 	const	[hasDeposited, set_hasDeposited] = useState(false);
 	const	[hasDepositError, set_hasDepositError] = useState(false);
 
+
 	useEffect(() => {
-		if (provider && address) {
+		if (provider && address && bankImplemented) {
 			provider.getBalance(address).then(b => set_ftmBalance(ethers.utils.formatEther(b)));
 			const	DAI_CONTRACT = new ethers.Contract(
 				process.env.DAI_TOKEN_ADDR, [
@@ -284,7 +305,16 @@ function	Index() {
 		});
 	}
 
-	function	renderNPCDialog() {
+	function	renderNPCDialog(router) {
+		if (!bankImplemented) {
+			return (
+				<DialogBox
+					options={[
+						{label: 'Go back to the tavern', onClick: () => router.push('/town/tavern')},
+					]} />
+			);
+		}
+
 		if (selectedVault?.id === 1 && (Number(selectedVault?.balance || 0) > 0 || Number(selectedVault?.share || 0) > 0)) {
 			if ((Number(selectedVault?.balance || 0) === 0 && Number(selectedVault?.share || 0) > 0) || !isDeposit) {
 				return (
@@ -472,7 +502,7 @@ function	Index() {
 							isDeposit={isDeposit} />
 					</Box>
 				</div>
-				{renderNPCDialog()}
+				{renderNPCDialog(router)}
 			</div>
 		</section>
 	);		
